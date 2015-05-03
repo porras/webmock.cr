@@ -173,7 +173,7 @@ describe WebMock do
 
   it "expects headers, allows integer" do
     WebMock.wrap do
-      WebMock.stub(:post, "http://www.example.com").with(body: "abc", headers: {"Content-Length": 3}).to_return(body: "something")
+      WebMock.stub(:post, "http://www.example.com").with(body: "abc", headers: {"Content-Length": "3"}).to_return(body: "something")
 
       response = HTTP::Client.post("http://www.example.com", body: "abc")
       response.body.should eq("something")
@@ -235,12 +235,12 @@ describe WebMock do
       rescue ex : WebMock::NetConnectNotAllowedError
         ex.message.strip.should eq(
 <<-MSG
-Real HTTP connections are disabled. Unregistered request: POST http://www.example.com with body "Hello!" with headers {"Foo" => "Bar", "Host" => "www.example.com", "Content-length" => "6"}
+Real HTTP connections are disabled. Unregistered request: POST http://www.example.com with body "Hello!" with headers {"Foo" => ["Bar"], "Host" => ["www.example.com"], "Content-length" => ["6"]}
 
 You can stub this request with the following snippet:
 
 WebMock.stub(:post, "www.example.com/foo?a=1").
-  with(body: "Hello!", headers: {"Foo" => "Bar"}).
+  with(body: "Hello!", headers: {"Foo" => ["Bar"]}).
   to_return(body: "")
 MSG
 )
